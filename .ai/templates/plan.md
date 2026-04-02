@@ -1,198 +1,160 @@
-# Project Implementation Plan Template
+**Game Name: Color Echo**
 
-Read `.ai/rules.md` first before starting implementation.
+**Genre: Memory / Reflex Game**
 
-## 1. Project Overview
+## **1\. 🎮 Core Gameplay**
 
-[Provide a brief overview of the project and its purpose]
+### **1.1 Game Loop**
 
-This project focuses on [core functionality]. Future versions may include [potential future features].
+- Player opens the game - sees an image (/Users/linabell/Downloads/colorEcho.png but should be saved in the repo), description, and start button (in PageFooter)
+- On start, board is revealed.
+- The game plays a sequence of **colored button flashes** (each paired with a sound).
+- The player must **reproduce the sequence** in exact order by clicking the buttons.
+- Outcomes:
 
-## 2. Core User Flow
+  - Correct > next round
+  - Incorrect > failure state (see Section below)
 
-1. [First step in user flow]
-2. [Second step in user flow]
-3. [Third step in user flow]
-4. [Fourth step in user flow]
-5. [Fifth step in user flow]
+    - Option A: The game ends.
+    - Option B (if enabled): Player loses a life and retries the sequence.
 
-## 3. Important Terminology
+- Game ends on:
 
-- **[Key Term 1]**: [Definition of the term and its significance in the project]
-- **[Key Term 2]**: [Definition of the term and its significance in the project]
+  - Failure (natural end)
+  - Player exit/quit
 
-## 4. Technical Requirements
+## 1.2 Progression
 
-### Styling Guidelines
+- Levels and Rounds:
 
-All client-side components MUST follow the comprehensive styling guide in `.ai/style-guide.md`.
+  - Game structured as Levels > Rounds
+  - Each level contains \[5\] rounds
 
-Key requirements:
+- Each round adds complexity:
 
-- Use SDK CSS classes for all UI elements, avoid inline styles wherever possible
-- Follow the component structure pattern in examples
-- Use aliased imports and proper error handling
-- Validate styling before submitting implementation
+  - Adding speed to the initial pattern
+  - Adding number of items in a sequence
 
-### Data Models
+- Each level may add a new color up to the max
 
-#### [Model Name 1]
+  - Adding new color to game (up to max configured by admins, defaults to 6)
 
-```typescript
-interface ExampleType {
-  property1: string;
-  property2: number;
-  property3: {
-    nestedProperty1: boolean;
-    nestedProperty2: string;
-  };
-}
-```
+- EXAMPLES:
 
-Example output:
+  - Level 1 (2 colors)
 
-```ts
-{
-  "property1": "example value",
-  "property2": 123,
-  "property3": {
-    "nestedProperty1": true,
-    "nestedProperty2": "example nested value"
-  }
-}
-```
+    - R1: length 2, slow
+    - R2: length 3, slow
+    - R3: length 3, slow
+    - R4: length 4, medium
+    - R5: length 4, medium
 
-#### [Model Name 2]
+  - Level 2 (3 colors)
 
-```typescript
-interface ExampleType2 {
-  // Define another data model
-}
-```
+    - R1: length 3, medium
+    - R2: length 4, medium
+    - R3: length 4, fast
+    - R4: length 5, medium
+    - R5: length 5, medium
 
-## 5. User Stories & Acceptance Criteria
+  - Level 3 (4 colors)
 
-### Epic 1: [Epic Name]
+    - R1: length 4, medium
+    - R2: length 5, medium
+    - R3: length 5, fast
+    - R4: length 6, medium
+    - R5: length 6, medium
 
-#### User Story 1.1 - [User Story Title]
+## **2\. 🧩 UI Components**
 
-As a [user type], I want to [action] so that [benefit/value]
+### **2.1 Button Grid**
 
-✅ Acceptance Criteria:
+- 2–6 colored buttons in a circle
+- Each button:
 
-- [Criterion 1]
-- [Criterion 2]
-- [Criterion 3]
+  - Has a unique color.
+  - Plays a unique audio tone when triggered.
+  - Glow on activation
 
-#### User Story 1.2 - [User Story Title]
+### **2.2 Elements**
 
-As a [user type], I want to [action] so that [benefit/value]
+- **Round Indicator:** Displays current round number.
+- **Start/Restart Button:** To begin or replay the game.
+- **Lives Indicator (if enabled):** 1–3 hearts or icons.
 
-✅ Acceptance Criteria:
+### 2.3 Transitions
 
-- [Criterion 1]
-- [Criterion 2]
-- [Criterion 3]
+- Between rounds: short pause
+- Between levels:
 
-### Epic 2: [Epic Name]
+  - Modal: new level unlocked with new color indicated.
+  - Celebration (in modal + particle effect)
 
-#### User Story 2.1 - [User Story Title]
+## **3\. 🧠 Sequence Logic**
 
-As a [user type], I want to [action] so that [benefit/value]
+### **3.1 Sequence Generator (**@danielle update with notes of call)
 
-✅ Acceptance Criteria:
+- Each new round:
 
-- [Criterion 1]
-- [Criterion 2]
-- [Criterion 3]
+  - Sequence difficulty is increases either by increasing sequence length or increasing playback speed.
 
-## 6. Implementation Plan
+- Player must match entire sequence.
 
-### Server-side Components
+## **4\. ✨ Visual & Audio Effects**
 
-- [List server-side files to be created/modified]
-- [Controller for User Story 1.1]
-- [Controller for User Story 1.2]
+**4.1 Visual Feedback**
 
-### Client-side Components
+- Button glows during sequence and player tap.
+- Success: particle effect on leveling up
+- Failure: screen shake or red flash.
 
-- [List client-side files to be created/modified]
-- [Component for User Story 1.1]
-- [Component for User Story 2.1]
+### **4.2 Audio**
 
-### API Endpoints
+- Each button has a **distinct tone or sound**.
 
-```typescript
-// POST /api/endpoint1
-// Request: { param1: string, param2: number }
-// Response: { success: true, data: ResponseType }
+## **5\. ⚙️ Configurability (Admin Panel)**
 
-// GET /api/endpoint2
-// Response: { success: true, data: ResponseType2[] }
-```
+- All admin settings should be stored in the dropped asset's data object
 
-### State Management
+- Max colors: Admin can choose 4, 5, or 6. Default 6
+- Lives: 0 (sudden death) to 3. Default 3
+- Speed of sequence playback (slow, medium, fast, progressive - changes with round). Default progressive
+- Enable/disable particles (could allow choice). Default enabled
 
-- [Describe how state will be managed, emphasizing use of GlobalContext]
-- [Specify any state needed for User Story 1.1]
-- [Specify any state needed for User Story 2.1]
+## **6\. 📊 Analytics & Tracking**
 
-## 7. Testing Approach
+- gameOpens (uniqueKey: profileId)
+- gameStarts (uniqueKey: profileId)
+- gameEnds (uniqueKey: profileId)
+- level#Reached (uniqueKey: profileId)
+- admin#MaxColor (no uniqueKey)
+- admin#Lives (no uniqueKey)
 
-- [Describe how each user story will be tested]
-- [Specify any mock data needed]
+## **7\. Badges**
 
-## 8. Validation Checklist
+- Memory Builder - Reach sequence length of 4
+- Pattern Player - complete 5 correct rounds in a row
+- Mind in Motion - reach sequence length of \[8\]
+- Rising Star - Reach Level \[4\]
+- Color Master - unlock max colors
+- Echo Expert - complete level \[5\]
+- Unbreakable Pattern - reach sequence length \[10\]
+- Legendary Memory - reach a sequence of \[12\]
 
-Before submitting the implementation, verify:
+## **8\. 🛑 Failure States**
 
-- [ ] All user stories are implemented according to acceptance criteria
-- [ ] All UI elements use SDK classes, not Tailwind utilities
-- [ ] All buttons use `.btn` classes, not custom styling
-- [ ] All typography uses SDK classes (`.h1-h4`, `.p1-p4`)
-- [ ] All imports use aliased paths, not relative paths
-- [ ] Error handling uses GlobalContext
-- [ ] Component structure follows the pattern in `.ai/examples/page.md`
-- [ ] All API endpoints follow the established pattern and error handling
-- [ ] Tests are included for all new functionality
+### **8.1 Instant Fail Mode**
 
-## 9. Post-Implementation Finalization
+- One mistake ends the game.
 
-After the app is implemented, these steps MUST be completed before the app is considered done:
+### **8.2 Lives Mode (Optional)**
 
-### 9a. Remove Unused Boilerplate Code
+- Player has 1–3 attempts per game.
+- On mistake: lose a life, retry same sequence.
+- Game ends when lives reach 0.
 
-The boilerplate ships with example utilities, components, and types that may not be used by the new app. Scan for and remove:
+## **8\. Leaderboard**
 
-- **Server utils**: Check `server/utils/` for unused files (e.g., `droppedAssets/`, `getBaseUrl.ts`). Trace imports from controllers — if a util is not imported anywhere, remove it.
-- **Server types**: Check `server/types/` for unused type files (e.g., `DroppedAssetTypes.ts`). Remove types that are no longer referenced.
-- **Client components**: Check `client/src/components/` for unused boilerplate components (e.g., `Accordion.tsx`, `AdminView.tsx`, `AdminIconButton.tsx`, `ConfirmationModal.tsx`, `PageFooter.tsx`). Trace imports from pages — if a component is not imported anywhere, remove it.
-- **Barrel exports**: Update `server/utils/index.ts`, `server/types/index.ts`, and `client/src/components/index.ts` to remove exports of deleted files.
+- On game end a record should be added to the dropped asset's data object keyed by profileId documenting the level and round the reached (see topia-sdk-apps/sdk-color-echo/.ai/examples/leaderboard.md).
 
-**Protected files** (`PageContainer.tsx`, `backendAPI.ts`, etc.) must NOT be removed even if they appear unused — they are part of the framework.
-
-### 9b. Update README
-
-Rewrite `README.md` to describe the new app instead of the boilerplate. Include:
-
-- App name and description
-- What visitors see vs. what admins see
-- Key features
-- API endpoints with request/response shapes
-- Data object schemas
-- Setup and development instructions
-
-### 9c. Update Server Tests
-
-Rewrite `server/tests/routes.test.ts` to test the new app's actual routes:
-
-- Update the `jest.mock("../utils/index.js")` block to mock the new app's utils (not boilerplate ones like `getDroppedAsset`)
-- Update `server/mocks/@rtsdk/topia.ts` to include any new SDK factories/methods used (e.g., `EcosystemFactory`, `WorldActivityFactory`)
-- Add test cases for each route covering: success paths, error handling, authorization checks, input validation
-- Remove any tests for removed boilerplate routes
-
-### 9d. Commit, Push, and Open PR
-
-- Commit all changes to the `dev` branch
-- Push to remote
-- Open a PR from `dev` into `main` with appropriate labels
+- Changing admin setting should reset the leaderboard

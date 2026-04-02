@@ -1,3 +1,173 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+  background: linear-gradient(145deg, #f3f2ff 0%, #f3f7fd 50%, #e7fcfe 100%);
+  min-height: 100vh;
+  color: #e0e0e0;
+}
+
+/* Subtle animated glow behind the game board */
+.game-board::before {
+  content: "";
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(108, 92, 231, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+  animation: boardGlow 4s ease-in-out infinite alternate;
+}
+
+@keyframes boardGlow {
+  0% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0.8;
+  }
+}
+
+.game-board-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.game-board {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.game-button {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+  outline: none;
+}
+
+.game-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.game-button:not(:disabled):hover {
+  transform: scale(1.08);
+}
+
+.game-button:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+.game-button.active {
+  transform: scale(1.15);
+  filter: brightness(1.2);
+}
+
+/* Color definitions */
+.game-button.color-0 {
+  background: radial-gradient(circle at 35% 35%, #ff6b6b, #c0392b);
+  box-shadow: 0 0 8px rgba(192, 57, 43, 0.4);
+}
+.game-button.color-0.active {
+  box-shadow: 0 0 25px 8px rgba(255, 107, 107, 0.7);
+}
+
+.game-button.color-1 {
+  background: radial-gradient(circle at 35% 35%, #74b9ff, #2980b9);
+  box-shadow: 0 0 8px rgba(41, 128, 185, 0.4);
+}
+.game-button.color-1.active {
+  box-shadow: 0 0 25px 8px rgba(116, 185, 255, 0.7);
+}
+
+.game-button.color-2 {
+  background: radial-gradient(circle at 35% 35%, #55ef95, #00b894);
+  box-shadow: 0 0 8px rgba(0, 184, 148, 0.4);
+}
+.game-button.color-2.active {
+  box-shadow: 0 0 25px 8px rgba(84, 240, 118, 0.7);
+}
+
+.game-button.color-3 {
+  background: radial-gradient(circle at 35% 35%, #fff89a, #fdde6e);
+  box-shadow: 0 0 8px rgba(253, 203, 110, 0.4);
+}
+.game-button.color-3.active {
+  box-shadow: 0 0 25px 8px rgba(253, 234, 129, 0.7);
+}
+
+.game-button.color-4 {
+  background: radial-gradient(circle at 35% 35%, #fec88d, #ff9514);
+  box-shadow: 0 0 8px rgba(247, 166, 80, 0.4);
+}
+.game-button.color-4.active {
+  box-shadow: 0 0 25px 8px rgba(251, 162, 67, 0.7);
+}
+
+.game-button.color-5 {
+  background: radial-gradient(circle at 35% 35%, #a29bfe, #6c5ce7);
+  box-shadow: 0 0 8px rgba(108, 92, 231, 0.4);
+}
+.game-button.color-5.active {
+  box-shadow: 0 0 25px 8px rgba(162, 155, 254, 0.7);
+}
+
+/* Error flash */
+.game-board-container.error-flash {
+  animation: shakeError 0.4s ease-in-out;
+}
+
+@keyframes shakeError {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(8px);
+  }
+  60% {
+    transform: translateX(-6px);
+  }
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+/* Game status bar */
+.game-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 280px;
+  padding: 8px 0;
+}
+
+.lives-display {
+  display: flex;
+  gap: 4px;
+}
+
+.heart {
+  font-size: 24px;
+  color: #000;
+  transition: opacity 0.3s ease;
+}
+
+.heart.lost {
+  opacity: 0.25;
+}
