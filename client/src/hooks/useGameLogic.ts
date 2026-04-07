@@ -98,9 +98,12 @@ export const useGameLogic = (config: GameConfig | undefined) => {
         }, i * totalPerStep);
 
         // Deactivate button
-        const deactivateTimeout = setTimeout(() => {
-          setGameState((prev) => ({ ...prev, activeButton: null }));
-        }, i * totalPerStep + speedMs);
+        const deactivateTimeout = setTimeout(
+          () => {
+            setGameState((prev) => ({ ...prev, activeButton: null }));
+          },
+          i * totalPerStep + speedMs,
+        );
 
         timeoutsRef.current.push(activateTimeout, deactivateTimeout);
       });
@@ -170,7 +173,13 @@ export const useGameLogic = (config: GameConfig | undefined) => {
       callbacks: {
         onRoundComplete?: () => void;
         onLevelUp?: (newLevel: number) => void;
-        onGameOver?: (stats: { level: number; round: number; maxSequenceLength: number; consecutiveCorrectRounds: number; colorsUnlocked: number }) => void;
+        onGameOver?: (stats: {
+          level: number;
+          round: number;
+          maxSequenceLength: number;
+          consecutiveCorrectRounds: number;
+          colorsUnlocked: number;
+        }) => void;
         onError?: () => void;
       },
     ) => {
