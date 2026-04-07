@@ -75,6 +75,8 @@ export const GameBoard = ({ gameState, onButtonPress, onSetPlayTone }: GameBoard
         {phase === "game-over" && "Game Over!"}
         {phase === "idle" && ""}
       </h4>
+
+      <p>{phase === "player-input" && `${gameState.playerInput.length}/${gameState.sequence.length}`}</p>
     </div>
   );
 };
