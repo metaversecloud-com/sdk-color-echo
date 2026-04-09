@@ -1,82 +1,113 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 // components
-import { PageFooter, ConfirmationModal } from "@/components";
+import { PageFooter } from "@/components";
 
 // context
 import { GlobalDispatchContext, GlobalStateContext } from "@/context/GlobalContext";
-import { ErrorType } from "@/context/types";
+import { ErrorType, GameConfig, SpeedMode } from "@/context/types";
 
 // utils
-import { backendAPI, setErrorMessage } from "@/utils";
+import { backendAPI, setErrorMessage, setGameState } from "@/utils";
 
 export const AdminView = () => {
   const dispatch = useContext(GlobalDispatchContext);
-  const { droppedAsset } = useContext(GlobalStateContext);
-  const imgSrc = droppedAsset?.topLayerURL || droppedAsset?.bottomLayerURL;
+  const { config } = useContext(GlobalStateContext);
 
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [areButtonsDisabled, setAreButtonsDisabled] = useState(false);
+  const [maxColors, setMaxColors] = useState(config?.maxColors ?? 6);
+  const [lives, setLives] = useState(config?.lives ?? 3);
+  const [speed, setSpeed] = useState<SpeedMode>(config?.speed ?? "progressive");
+  const [particlesEnabled, setParticlesEnabled] = useState(config?.particlesEnabled ?? true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
 
-  const handleToggleShowConfirmationModal = () => {
-    setShowConfirmationModal(!showConfirmationModal);
-  };
+  useEffect(() => {
+    if (config) {
+      setMaxColors(config.maxColors);
+      setLives(config.lives);
+      setSpeed(config.speed);
+      setParticlesEnabled(config.particlesEnabled);
+    }
+  }, [config]);
 
-  const handleDropAsset = async () => {
-    setAreButtonsDisabled(true);
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSaveMessage("");
 
-    backendAPI
-      .post("/dropped-asset")
-      .then(() => {
-        backendAPI.put("/world/fire-toast", { title: "Asset successfully dropped!" });
-      })
-      .catch((error) => setErrorMessage(dispatch, error as ErrorType))
-      .finally(() => {
-        setAreButtonsDisabled(false);
-      });
-  };
-
-  const handleRemoveDroppedAssets = async () => {
-    setAreButtonsDisabled(true);
+    const newConfig: GameConfig = { maxColors, lives, speed, particlesEnabled };
 
     backendAPI
-      .post("/remove-dropped-assets")
-      .then(() => {
-        backendAPI.put("/world/fire-toast", {
-          title: "Dropped assets successfully removed!",
-          text: "All dropped assets with matching unique name have been removed from this world.",
-        });
+      .put("/update-config", newConfig)
+      .then((response) => {
+        setGameState(dispatch, { config: newConfig });
+
+        if (response.data?.leaderboardReset) {
+          setGameState(dispatch, { leaderboard: [] });
+          setSaveMessage("Settings saved. Leaderboard has been reset.");
+        } else {
+          setSaveMessage("Settings saved.");
+        }
+
+        // Refresh game state to get updated leaderboard
+        backendAPI
+          .get("/game-state")
+          .then((res) => setGameState(dispatch, res.data))
+          .catch(() => {});
       })
       .catch((error) => setErrorMessage(dispatch, error as ErrorType))
-      .finally(() => {
-        setAreButtonsDisabled(false);
-      });
+      .finally(() => setIsSaving(false));
   };
 
   return (
-    <div style={{ position: "relative" }}>
-      {imgSrc && <img className="w-96 h-96 object-cover rounded-2xl my-4" alt="preview" src={imgSrc} />}
+    <div className="grid gap-4">
+      <div>
+        <label className="label">Max Colors</label>
+        <select className="input p2" value={maxColors} onChange={(e) => setMaxColors(Number(e.target.value))}>
+          <option value={4}>4 Colors</option>
+          <option value={5}>5 Colors</option>
+          <option value={6}>6 Colors</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="label">Lives</label>
+        <select className="input p2" value={lives} onChange={(e) => setLives(Number(e.target.value))}>
+          <option value={0}>Sudden Death</option>
+          <option value={1}>1 Life</option>
+          <option value={2}>2 Lives</option>
+          <option value={3}>3 Lives</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="label">Playback Speed</label>
+        <select className="input p2" value={speed} onChange={(e) => setSpeed(e.target.value as SpeedMode)}>
+          <option value="slow">Slow</option>
+          <option value="medium">Medium</option>
+          <option value="fast">Fast</option>
+          <option value="progressive">Progressive</option>
+        </select>
+      </div>
+
+      <div className="mt-2">
+        <label className="label">
+          <input
+            className="input-checkbox"
+            type="checkbox"
+            checked={particlesEnabled}
+            onChange={(e) => setParticlesEnabled(e.target.checked)}
+          />
+          Enable Particle Effects
+        </label>
+      </div>
+
+      {saveMessage && <p className="p3 text-success mb-2">{saveMessage}</p>}
+
       <PageFooter>
-        <button className="btn mt-2" disabled={areButtonsDisabled} onClick={handleDropAsset}>
-          Drop Asset
-        </button>
-        <button
-          className="btn btn-danger mt-2"
-          disabled={areButtonsDisabled}
-          onClick={() => handleToggleShowConfirmationModal()}
-        >
-          Remove Dropped Assets
+        <button className="btn" disabled={isSaving} onClick={handleSave}>
+          {isSaving ? "Saving..." : "Save Settings"}
         </button>
       </PageFooter>
-
-      {showConfirmationModal && (
-        <ConfirmationModal
-          title="Remove Dropped Assets"
-          message="Are you sure you want to remove all dropped assets? This action cannot be undone."
-          handleOnConfirm={handleRemoveDroppedAssets}
-          handleToggleShowConfirmationModal={handleToggleShowConfirmationModal}
-        />
-      )}
     </div>
   );
 };
