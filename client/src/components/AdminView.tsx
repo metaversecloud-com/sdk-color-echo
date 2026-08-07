@@ -72,9 +72,9 @@ export const AdminView = () => {
       <div>
         <label className="label">Lives</label>
         <select className="input p2" value={lives} onChange={(e) => setLives(Number(e.target.value))}>
-          <option value={0}>Sudden Death</option>
+          <option value={0}>1 Life</option>
           <option value={3}>3 Lives</option>
-          <option value={5}>5 Life</option>
+          <option value={5}>5 Lives</option>
         </select>
       </div>
 
