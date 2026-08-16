@@ -21,4 +21,4 @@ images:
   - name: colorecho0
     newName: 368076259134.dkr.ecr.us-east-1.amazonaws.com/sdk-example
     newTag: sdk-color-echo
-    digest: sha256:dc845289424aed0877239d2c8d5eb0551c4220b1fa285f302ad7b977e81fdd73
+    digest: sha256:d1550745caf3d2a0aefc44c9156a61f56f6350eee7e1ca762bb5ccca5c895b50
