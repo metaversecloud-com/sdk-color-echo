@@ -5,7 +5,6 @@ resources:
   - colorecho0-config.yaml
   - colorecho0-sealedsecret.yaml
   - colorecho0-httpscaledobject.yaml
-  - colorecho0-interceptor-ingress.yaml
 patches:
   # Drop the direct ALB Ingress: dev is fronted through the KEDA interceptor.
   - target:
