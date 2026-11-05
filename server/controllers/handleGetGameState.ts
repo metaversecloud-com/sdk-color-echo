@@ -5,7 +5,7 @@ export const handleGetGameState = async (req: Request, res: Response) => {
   try {
     const credentials = getCredentials(req.query);
     const { urlSlug, visitorId, profileId } = credentials;
-    const forceRefreshInventory = true; //req.query.forceRefreshInventory === "true";
+    const forceRefreshInventory = req.query.forceRefreshInventory === "true";
 
     const [droppedAsset, badges] = await Promise.all([
       getDroppedAsset(credentials),
