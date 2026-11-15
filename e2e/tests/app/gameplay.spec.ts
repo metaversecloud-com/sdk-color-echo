@@ -45,6 +45,8 @@ test("a wrong color costs a life and replays the same pattern", async ({ page, w
   await page.getByRole("button", { name: "Start Game" }).click();
   await untilTurn(page);
   await expect(hearts(page)).toHaveCount(3);
+  // Stop the clock so the 1s flash can't end on its own before it's checked (a loaded machine is that slow).
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 500));
 
   await page.getByRole("button", { name: "Blue" }).click();
 
