@@ -26,8 +26,8 @@ export const FIRST_ROUND_LOSS: Stats = {
 };
 
 /**
- * Opens the game with a stopped clock and a fixed Math.random, so every sequence is the same color
- * (0 = Red, the first button) and the test advances time itself.
+ * Opens the game with a controllable clock and a fixed Math.random, so every sequence is the same color
+ * (0 = Red, the first button) and the test fast-forwards through the pattern playback.
  */
 export async function openGame(page: Page, world: TopiaWorld, credentials: Record<string, string> = {}) {
   await page.addInitScript(() => {
@@ -46,7 +46,8 @@ export const lostHearts = (page: Page) => page.locator(".lives-display .heart.lo
 /** Advances the page clock until it's the player's turn (the sequence finished playing). */
 export async function untilTurn(page: Page) {
   for (let i = 0; i < 200; i++) {
-    if (await turnPrompt(page).isVisible()) return;
+    // After a mistake the prompt stays up during the 1s flash (EXP-457 #3); the turn starts after the replay.
+    if ((await turnPrompt(page).isVisible()) && (await page.locator(".error-flash").count()) === 0) return;
     await page.clock.runFor(100);
   }
   throw new Error("the player's turn never came");
