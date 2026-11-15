@@ -1,0 +1,98 @@
+[
+  {
+    "id": "badge-1",
+    "name": "Perfect Score",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Perfect Score badge",
+    "image_path": "https://example.invalid/badges/1.png"
+  },
+  {
+    "id": "badge-2",
+    "name": "Lightning Round",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Lightning Round badge",
+    "image_path": "https://example.invalid/badges/2.png"
+  },
+  {
+    "id": "badge-3",
+    "name": "Quiz Master",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Quiz Master badge",
+    "image_path": "https://example.invalid/badges/3.png"
+  },
+  {
+    "id": "badge-4",
+    "name": "Top 3 Finisher",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Top 3 Finisher badge",
+    "image_path": "https://example.invalid/badges/4.png"
+  },
+  {
+    "id": "badge-5",
+    "name": "Memory Builder",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Memory Builder badge",
+    "image_path": "https://example.invalid/badges/5.png"
+  },
+  {
+    "id": "badge-6",
+    "name": "Pattern Player",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Pattern Player badge",
+    "image_path": "https://example.invalid/badges/6.png"
+  },
+  {
+    "id": "badge-7",
+    "name": "Mind in Motion",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Mind in Motion badge",
+    "image_path": "https://example.invalid/badges/7.png"
+  },
+  {
+    "id": "badge-8",
+    "name": "Rising Star",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Rising Star badge",
+    "image_path": "https://example.invalid/badges/8.png"
+  },
+  {
+    "id": "badge-9",
+    "name": "Color Master",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Color Master badge",
+    "image_path": "https://example.invalid/badges/9.png"
+  },
+  {
+    "id": "badge-10",
+    "name": "Echo Expert",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Echo Expert badge",
+    "image_path": "https://example.invalid/badges/10.png"
+  },
+  {
+    "id": "badge-11",
+    "name": "Unbreakable Pattern",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Unbreakable Pattern badge",
+    "image_path": "https://example.invalid/badges/11.png"
+  },
+  {
+    "id": "badge-12",
+    "name": "Legendary Memory",
+    "type": "BADGE",
+    "status": "ACTIVE",
+    "description": "Legendary Memory badge",
+    "image_path": "https://example.invalid/badges/12.png"
+  }
+]
