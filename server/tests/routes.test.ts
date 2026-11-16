@@ -46,6 +46,7 @@ const mockVisitor = {
   updateDataObject: jest.fn().mockResolvedValue({}),
   grantInventoryItem: jest.fn().mockResolvedValue({}),
   fireToast: jest.fn().mockResolvedValue({}),
+  triggerParticle: jest.fn().mockResolvedValue({}),
 };
 
 const mockWorld = {
@@ -73,6 +74,7 @@ jest.mock("@utils/index.js", () => ({
   },
   DroppedAsset: {
     get: jest.fn(),
+    create: jest.fn(),
   },
 }));
 
@@ -91,6 +93,7 @@ describe("routes", () => {
     mockUtils.Visitor.create.mockResolvedValue(mockVisitor);
     mockUtils.World.create.mockReturnValue(mockWorld);
     mockUtils.DroppedAsset.get.mockResolvedValue(mockDroppedAsset);
+    mockUtils.DroppedAsset.create.mockResolvedValue(mockDroppedAsset);
     mockUtils.awardBadge.mockResolvedValue({ success: true });
     mockUtils.getCachedInventoryItems.mockResolvedValue([]);
   });
@@ -157,7 +160,7 @@ describe("routes", () => {
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty("success", true);
     expect(res.body).toHaveProperty("visitorInventory");
-    expect(mockUtils.DroppedAsset.get).toHaveBeenCalledWith(
+    expect(mockUtils.DroppedAsset.create).toHaveBeenCalledWith(
       baseCreds.assetId,
       baseCreds.urlSlug,
       { credentials: baseCreds },
